@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BottomPeek<Content: View>: View {
     let peekHeight: CGFloat
@@ -29,6 +30,8 @@ struct ContentView: View {
 
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
+    
+    @State private var selectedChatSession: ChatSession? = nil
 
     private let service = VideoCaptureService()
     
@@ -86,10 +89,9 @@ struct ContentView: View {
             // MARK: - Left Sidebar
             if showingLeftSidebar {
                 HStack {
-                    ChatHistoryView()
+                    ChatHistoryView(selectedChatSession: $selectedChatSession)
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .leading))
-//                    SidebarView(side: .left)
                     Spacer()
                 }
             }
@@ -98,7 +100,7 @@ struct ContentView: View {
             if showingRightSidebar {
                 HStack {
                     Spacer()
-                    SidebarView(side: .right)
+                    ChatView(session: selectedChatSession)
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .trailing))
                 }
@@ -127,5 +129,29 @@ struct SidebarView: View {
 
 
 #Preview {
-    ContentView()
+    let schema = Schema([
+        ChatSession.self,
+        ChatMessage.self,
+        Attachment.self,
+    ])
+    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+    let modelContainer = try! ModelContainer(for: schema, configurations: [modelConfiguration])
+    
+    let chatSessionToSelect = ChatSession(
+        title: "Sample chat 1",
+        createdAt: .now,
+        updatedAt: .now,
+        messages: []
+    )
+    modelContainer.mainContext.insert(chatSessionToSelect)
+    modelContainer.mainContext.insert(ChatSession(
+        title: "Sample chat 2",
+        createdAt: .now,
+        updatedAt: .now,
+        messages: []
+    ))
+
+    
+    return ContentView()
+        .modelContainer(modelContainer)
 }

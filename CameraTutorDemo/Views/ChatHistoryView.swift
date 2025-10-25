@@ -9,12 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct ChatHistoryView: View {
+    @Binding var selectedChatSession: ChatSession?
+    
     @Query(sort: \ChatSession.updatedAt, order: .reverse)
     private var chatSessions: [ChatSession]
     
     @Environment(\.modelContext) var modelContext
     
-    @State private var selectedChatSession: ChatSession? = nil
     @State private var query = ""
     
     var body: some View {
@@ -44,12 +45,13 @@ struct ChatHistoryView: View {
     let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
     let modelContainer = try! ModelContainer(for: schema, configurations: [modelConfiguration])
     
-    modelContainer.mainContext.insert(ChatSession(
+    let chatSessionToSelect = ChatSession(
         title: "Sample chat 1",
         createdAt: .now,
         updatedAt: .now,
         messages: []
-    ))
+    )
+    modelContainer.mainContext.insert(chatSessionToSelect)
     modelContainer.mainContext.insert(ChatSession(
         title: "Sample chat 2",
         createdAt: .now,
@@ -57,7 +59,7 @@ struct ChatHistoryView: View {
         messages: []
     ))
 
-    return ChatHistoryView()
+    return ChatHistoryView(selectedChatSession: .constant(chatSessionToSelect))
         .modelContainer(modelContainer)
 }
 
