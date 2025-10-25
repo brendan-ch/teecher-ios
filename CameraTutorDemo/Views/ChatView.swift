@@ -21,11 +21,11 @@ struct ChatView: View {
             }
         }
         
-        TextField("Ask anything", text: $query)
-            .textFieldStyle(.roundedBorder)
-            .padding()
-            .submitLabel(.send)
-            .onSubmit(submit)
+//        TextField("Ask anything", text: $query)
+//            .textFieldStyle(.roundedBorder)
+//            .padding()
+//            .submitLabel(.send)
+//            .onSubmit(submit)
     }
     
     func submit() {

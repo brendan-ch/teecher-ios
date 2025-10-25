@@ -6,13 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		20B8871B2EAD3412006DAA37 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		20B887022EAD3141006DAA37 /* CameraTutorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraTutorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,7 +47,6 @@
 			children = (
 				20B887042EAD3141006DAA37 /* CameraTutorDemo */,
 				20B887032EAD3141006DAA37 /* Products */,
-				20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,7 +132,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				20B8871B2EAD3412006DAA37 /* CameraPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
