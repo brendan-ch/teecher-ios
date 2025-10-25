@@ -33,3 +33,31 @@ final class ChatMessage {
         self.timestamp = timestamp
     }
 }
+
+extension ChatMessage {
+    static var sampleUserMessage: ChatMessage {
+        .init(
+            content: "How do you solve this quadratic equation?",
+            role: .user,
+            timestamp: .distantPast
+        )
+    }
+    
+    static var sampleAssistantMessage: ChatMessage {
+        .init(
+            content: """
+Let’s think this through step by step instead of jumping straight to the answer.
+
+First, when you see a quadratic equation like 3x^2 - 5x + 2 = 0, what’s the general approach or formula that comes to mind for solving it?
+
+There are a few ways — factoring, completing the square, or using the quadratic formula.
+
+If factoring looks possible, we can look for two numbers that multiply to 3 \times 2 = 6 and add up to -5.
+
+Can you think of two numbers that fit that description?
+""",
+            role: .assistant,
+            timestamp: .now
+        )
+    }
+}

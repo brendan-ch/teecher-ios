@@ -14,6 +14,7 @@ struct ChatHistoryView: View {
     
     @Environment(\.modelContext) var modelContext
     
+    @State private var selectedChatSession: ChatSession? = nil
     @State private var query = ""
     
     var body: some View {
@@ -25,7 +26,7 @@ struct ChatHistoryView: View {
                     ScrollView {
                         ForEach(chatSessions) { chatSession in
                             ChatSessionListButton(chatSession: chatSession) {
-                                // navigate to the chat
+                                selectedChatSession = chatSession
                             }
                         }
                     }
@@ -36,6 +37,9 @@ struct ChatHistoryView: View {
                     .padding()
             }
             .navigationTitle("Chats")
+            .navigationDestination(item: $selectedChatSession) { session in
+                ChatView(session: session)
+            }
         }
     }
 }
