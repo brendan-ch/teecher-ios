@@ -19,7 +19,7 @@ struct ChatHistoryView: View {
     var body: some View {
         VStack {
             HStack(alignment: .top) {
-                Text("History")
+                Text("Chats")
                     .font(.title)
                     .bold()
                 Spacer()
@@ -30,7 +30,7 @@ struct ChatHistoryView: View {
                 Text("No chat history.")
             } else {
                 ForEach(chatSessions) { chatSession in
-                    Text(chatSession.title)
+                    ChatSessionListItemView(chatSession: chatSession)
                 }
             }
             
