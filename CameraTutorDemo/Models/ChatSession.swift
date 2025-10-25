@@ -33,7 +33,7 @@ class ChatSession {
     func constructChatMessageFromAssistant(
         session: URLSession = .shared,
         userChatMessage: ChatMessage,
-    ) async -> ChatMessage {
+    ) async throws -> ChatMessage {
         .init(
             content: "Test message",
             role: .assistant,

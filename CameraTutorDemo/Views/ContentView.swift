@@ -22,6 +22,8 @@ struct BottomPeek<Content: View>: View {
 }
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var query = ""
     @FocusState private var keyboardFocused: Bool
     
@@ -57,7 +59,11 @@ struct ContentView: View {
                 TextField("Ask anything", text: $query)
                     .textFieldStyle(.roundedBorder)
                     .padding()
-                    .onSubmit(submit)
+                    .onSubmit {
+                        Task {
+                            await submit()
+                        }
+                    }
             }
             .offset(x: offset)
             .gesture(
@@ -110,7 +116,7 @@ struct ContentView: View {
         }
     }
     
-    func submit() {
+    func submit() async {
         // Capture the current video frame
         let capturedFrame = service.currentFrame
         guard let data = capturedFrame?.toJpegData() else {
@@ -118,13 +124,35 @@ struct ContentView: View {
         }
         print(data)
         
-        // Take the query
-        
-        
-        // Construct an instance of ChatMessage
-        // using ChatSession (this way we have context)
-        
-        
+        do {
+            let image = Attachment(name: "image-to-be-uploaded", type: .image)
+            try image.save(data: data, fileExtension: "jpg")
+            
+            let userChatMessage = ChatMessage(
+                content: query,
+                role: .user,
+                timestamp: .now
+            )
+            userChatMessage.attachments = [image]
+            
+            if selectedChatSession == nil {
+                selectedChatSession = ChatSession(
+                    title: "New chat session",
+                    createdAt: .now,
+                    updatedAt: .now,
+                    messages: []
+                )
+                modelContext.insert(selectedChatSession!)
+            }
+            
+            guard let selectedChatSession = selectedChatSession else { return }
+            selectedChatSession.messages.append(userChatMessage)
+            let assistantChatMessage = try await selectedChatSession.constructChatMessageFromAssistant(userChatMessage: userChatMessage)
+            selectedChatSession.messages.append(assistantChatMessage)
+            
+        } catch {
+            print("Unable to save image: \(error)")
+        }
     }
 }
 
