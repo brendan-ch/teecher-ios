@@ -9,6 +9,15 @@ import SwiftUI
 
 struct ChatView: View {
     var session: ChatSession?
+    var numberOfMessagesToDisplay: Int? = nil
+    
+    var messages: [ChatMessage] {
+        if let numberOfMessagesToDisplay = numberOfMessagesToDisplay {
+            return Array(session?.messages.prefix(upTo: numberOfMessagesToDisplay) ?? [])
+        } else {
+            return session?.messages ?? []
+        }
+    }
     
     var body: some View {
         ScrollView {
@@ -17,7 +26,7 @@ struct ChatView: View {
                     if session.messages.isEmpty {
                         Text("No messages")
                     } else {
-                        ForEach(session.messages) { message in
+                        ForEach(messages) { message in
                             MessageView(message: message)
                         }
                     }
@@ -33,24 +42,6 @@ struct ChatView: View {
     }
 }
 
-struct MessageView: View {
-    var message: ChatMessage
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Divider()
-            
-            VStack(alignment: .leading) {
-                Text(message.role.rawValue)
-                    .multilineTextAlignment(.leading)
-                    .bold()
-                Text(message.content)
-                    .multilineTextAlignment(.leading)
-            }
-        }
-        .padding(.horizontal)
-    }
-}
 
 #Preview {
     ChatView(session: .init(
@@ -58,26 +49,8 @@ struct MessageView: View {
         createdAt: .distantPast,
         updatedAt: .now,
         messages: [
-            .init(
-                content: "How do you solve this quadratic equation?",
-                role: .user,
-                timestamp: .distantPast
-            ),
-            .init(
-                content: """
-Let’s think this through step by step instead of jumping straight to the answer.
-
-First, when you see a quadratic equation like 3x^2 - 5x + 2 = 0, what’s the general approach or formula that comes to mind for solving it?
-
-There are a few ways — factoring, completing the square, or using the quadratic formula.
-
-If factoring looks possible, we can look for two numbers that multiply to 3 \times 2 = 6 and add up to -5.
-
-Can you think of two numbers that fit that description?
-""",
-                role: .assistant,
-                timestamp: .now
-            )
+            .sampleUserMessage,
+            .sampleAssistantMessage,
         ]
     ))
 }
