@@ -30,7 +30,9 @@ struct ChatHistoryView: View {
                 Text("No chat history.")
             } else {
                 ForEach(chatSessions) { chatSession in
-                    ChatSessionListItemView(chatSession: chatSession)
+                    ChatSessionListButton(chatSession: chatSession) {
+                        // navigate to the chat
+                    }
                 }
             }
             
