@@ -23,35 +23,108 @@ struct BottomPeek<Content: View>: View {
 struct ContentView: View {
     @State private var query = ""
     @FocusState private var keyboardFocused: Bool
+    
+    @State private var showingLeftSidebar = false
+    @State private var showingRightSidebar = false
+
+    @State private var baseOffset: CGFloat = 0
+    @State private var offset: CGFloat = 0
+
     private let service = VideoCaptureService()
+    
+    private let sidebarWidth: CGFloat = 320
+    
     var body: some View {
-        ZStack(alignment: .bottom) {
-            CameraPreviewView(session: service.session)
-                .ignoresSafeArea()
-                .onAppear {
-                    VideoCaptureService.attemptAuthorization()
-                    service.startRunning()
-                }
-                .onDisappear {
-                    service.stopRunning()
-                }
-                .onTapGesture {
-                    keyboardFocused = false
-                }
-                .zIndex(0)
+        ZStack {
+            ZStack(alignment: .bottom) {
+                CameraPreviewView(session: service.session)
+                    .ignoresSafeArea()
+                    .onAppear {
+                        VideoCaptureService.attemptAuthorization()
+                        service.startRunning()
+                    }
+                    .onDisappear {
+                        service.stopRunning()
+                    }
+                    .onTapGesture {
+                        keyboardFocused = false
+                    }
+                    .zIndex(0)
+                
+                TextField("Ask anything", text: $query)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+            }
+            .offset(x: offset)
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        offset = baseOffset + value.translation.width
+                    }
+                    .onEnded { value in
+                        withAnimation(.spring) {
+                            let actualOffset = baseOffset + value.translation.width
+                            
+                            if actualOffset > 100 {
+                                showingLeftSidebar = true
+                                showingRightSidebar = false
+                            } else if actualOffset < -100 {
+                                showingRightSidebar = true
+                                showingLeftSidebar = false
+                            } else {
+                                showingLeftSidebar = false
+                                showingRightSidebar = false
+                            }
+                            offset = (showingLeftSidebar ? sidebarWidth : (showingRightSidebar ? -sidebarWidth : 0))
+                            baseOffset = offset
+                        }
+                    }
+            )
+            .animation(.easeInOut, value: offset)
+            .edgesIgnoringSafeArea(.all)
             
-                .sheet(isPresented: .constant(true)) {
+            // MARK: - Left Sidebar
+            if showingLeftSidebar {
+                HStack {
                     ChatHistoryView()
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .clipped()
-                        .background(.ultraThinMaterial)
-                        .presentationDetents([.fraction(0.10), .large])
-                        .presentationBackgroundInteraction(.enabled)
-                        .interactiveDismissDisabled()
+                        .frame(width: sidebarWidth)
+                        .transition(.move(edge: .leading))
+//                    SidebarView(side: .left)
+                    Spacer()
                 }
+            }
+            
+            // MARK: - Right Sidebar
+            if showingRightSidebar {
+                HStack {
+                    Spacer()
+                    SidebarView(side: .right)
+                        .frame(width: sidebarWidth)
+                        .transition(.move(edge: .trailing))
+                }
+            }
+
         }
     }
 }
+
+struct SidebarView: View {
+    enum Side { case left, right }
+    let side: Side
+    
+    var body: some View {
+        VStack {
+            Text(side == .left ? "Left Sidebar" : "Right Sidebar")
+                .font(.title)
+            Spacer()
+        }
+        .padding()
+        .frame(maxHeight: .infinity)
+        .background(Color.black.opacity(0.8))
+        .foregroundColor(.white)
+    }
+}
+
 
 #Preview {
     ContentView()

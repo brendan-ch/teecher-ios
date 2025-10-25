@@ -19,28 +19,18 @@ struct ChatHistoryView: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            NavigationStack {
-                ScrollView {
-                    Spacer(minLength: 0) // pushes content down
-                    if chatSessions.isEmpty {
-                        Text("No chat history.")
-                    } else {
-                        ForEach(chatSessions) { chatSession in
-                            ChatSessionListButton(chatSession: chatSession) {
-                                selectedChatSession = chatSession
-                            }
+            ScrollView {
+                Spacer(minLength: 0) // pushes content down
+                if chatSessions.isEmpty {
+                    Text("No chat history.")
+                } else {
+                    ForEach(chatSessions) { chatSession in
+                        ChatSessionListButton(chatSession: chatSession) {
+                            selectedChatSession = chatSession
                         }
                     }
                 }
-                .navigationTitle("Chats")
-                .navigationDestination(item: $selectedChatSession) { session in
-                    ChatView(session: session)
-                }
             }
-            
-            TextField("Ask anything", text: $query)
-                .textFieldStyle(.roundedBorder)
-                .padding()
         }
     }
 }
@@ -54,18 +44,18 @@ struct ChatHistoryView: View {
     let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
     let modelContainer = try! ModelContainer(for: schema, configurations: [modelConfiguration])
     
-//    modelContainer.mainContext.insert(ChatSession(
-//        title: "Sample chat 1",
-//        createdAt: .now,
-//        updatedAt: .now,
-//        messages: []
-//    ))
-//    modelContainer.mainContext.insert(ChatSession(
-//        title: "Sample chat 2",
-//        createdAt: .now,
-//        updatedAt: .now,
-//        messages: []
-//    ))
+    modelContainer.mainContext.insert(ChatSession(
+        title: "Sample chat 1",
+        createdAt: .now,
+        updatedAt: .now,
+        messages: []
+    ))
+    modelContainer.mainContext.insert(ChatSession(
+        title: "Sample chat 2",
+        createdAt: .now,
+        updatedAt: .now,
+        messages: []
+    ))
 
     return ChatHistoryView()
         .modelContainer(modelContainer)
