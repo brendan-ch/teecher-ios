@@ -22,6 +22,7 @@ struct BottomPeek<Content: View>: View {
 }
 
 struct ContentView: View {
+    @ObservedObject private var keyboard = KeyboardResponder()
     @Environment(\.modelContext) private var modelContext
     
     @State private var query = ""
@@ -57,8 +58,10 @@ struct ContentView: View {
                     .zIndex(0)
                 
                 TextField("Ask anything", text: $query)
+                    .focused($keyboardFocused)
                     .textFieldStyle(.roundedBorder)
-                    .padding()
+                    .padding(.bottom, keyboard.currentHeight)
+                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
                     .onSubmit {
                         Task {
                             await submit()
