@@ -23,7 +23,13 @@ final class VideoCaptureService: NSObject {
 
     /// Tracks whether setup finished successfully.
     private var initialized = false
-
+    
+    /// The last frame captured by the video output.
+    private(set) var currentFrame: CVImageBuffer?
+    
+    typealias FrameHandler = (_ imageBuffer: CVImageBuffer) -> Void
+    private var nextFrameHandler: FrameHandler?
+    
     /// Whether the user has granted capture permissions to the app.
     var isAuthorized: Bool {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
@@ -122,14 +128,14 @@ final class VideoCaptureService: NSObject {
                 self.captureSession.stopRunning()
             }
             completion?(true)
+            self.nextFrameHandler = nil
         }
     }
 }
 
 extension VideoCaptureService: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        // Handle CMSampleBuffer frames here (e.g., CVPixelBuffer processing, encoding, etc.).
-        // For now, we keep it as a stub.
+        currentFrame = sampleBuffer.imageBuffer
     }
 
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {

@@ -57,6 +57,7 @@ struct ContentView: View {
                 TextField("Ask anything", text: $query)
                     .textFieldStyle(.roundedBorder)
                     .padding()
+                    .onSubmit(submit)
             }
             .offset(x: offset)
             .gesture(
@@ -107,6 +108,23 @@ struct ContentView: View {
             }
 
         }
+    }
+    
+    func submit() {
+        // Capture the current video frame
+        let capturedFrame = service.currentFrame
+        guard let data = capturedFrame?.toJpegData() else {
+            return
+        }
+        print(data)
+        
+        // Take the query
+        
+        
+        // Construct an instance of ChatMessage
+        // using ChatSession (this way we have context)
+        
+        
     }
 }
 
