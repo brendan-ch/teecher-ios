@@ -22,10 +22,8 @@ struct BottomPeek<Content: View>: View {
 }
 
 struct ContentView: View {
-    @ObservedObject private var keyboard = KeyboardResponder()
     @Environment(\.modelContext) private var modelContext
     
-    @State private var query = ""
     @FocusState private var keyboardFocused: Bool
     
     @State private var showingLeftSidebar = false
@@ -57,16 +55,11 @@ struct ContentView: View {
                     }
                     .zIndex(0)
                 
-                TextField("Ask anything", text: $query)
-                    .focused($keyboardFocused)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.bottom, keyboard.currentHeight)
-                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
-                    .onSubmit {
-                        Task {
-                            await submit()
-                        }
+                ChatInputBarView(keyboardFocused: $keyboardFocused) { text in
+                    Task {
+                        await submit(text)
                     }
+                }
             }
             .offset(x: offset)
             .gesture(
@@ -119,7 +112,7 @@ struct ContentView: View {
         }
     }
     
-    func submit() async {
+    func submit(_ query: String) async {
         // Capture the current video frame
         let capturedFrame = service.currentFrame
         guard let data = capturedFrame?.toJpegData() else {
