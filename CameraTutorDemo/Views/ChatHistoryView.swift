@@ -17,28 +17,25 @@ struct ChatHistoryView: View {
     @State private var query = ""
     
     var body: some View {
-        VStack {
-            HStack(alignment: .top) {
-                Text("Chats")
-                    .font(.title)
-                    .bold()
-                Spacer()
-            }
-            .padding(.horizontal)
-            
-            if chatSessions.isEmpty {
-                Text("No chat history.")
-            } else {
-                ForEach(chatSessions) { chatSession in
-                    ChatSessionListButton(chatSession: chatSession) {
-                        // navigate to the chat
+        NavigationStack {
+            VStack {
+                if chatSessions.isEmpty {
+                    Text("No chat history.")
+                } else {
+                    ScrollView {
+                        ForEach(chatSessions) { chatSession in
+                            ChatSessionListButton(chatSession: chatSession) {
+                                // navigate to the chat
+                            }
+                        }
                     }
                 }
+                
+                TextField("New chat", text: $query)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
             }
-            
-            TextField("New chat", text: $query)
-                .textFieldStyle(.roundedBorder)
-                .padding()
+            .navigationTitle("Chats")
         }
     }
 }
