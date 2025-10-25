@@ -9,15 +9,6 @@ import SwiftUI
 
 struct ChatView: View {
     var session: ChatSession?
-    var numberOfMessagesToDisplay: Int? = nil
-    
-    var messages: [ChatMessage] {
-        if let numberOfMessagesToDisplay = numberOfMessagesToDisplay {
-            return Array(session?.messages.prefix(upTo: numberOfMessagesToDisplay) ?? [])
-        } else {
-            return session?.messages ?? []
-        }
-    }
     
     var body: some View {
         ScrollView {
@@ -26,7 +17,7 @@ struct ChatView: View {
                     if session.messages.isEmpty {
                         Text("No messages")
                     } else {
-                        ForEach(messages) { message in
+                        ForEach(session.messages.sorted(by: <)) { message in
                             MessageView(message: message)
                         }
                     }
