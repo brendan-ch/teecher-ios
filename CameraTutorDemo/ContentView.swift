@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let service = VideoCaptureService()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        CameraPreviewView(session: service.session)
+            .ignoresSafeArea()
+            .onAppear {
+                VideoCaptureService.attemptAuthorization()
+                service.startRunning()
+            }
+            .onDisappear {
+                service.stopRunning()
+            }
     }
 }
 

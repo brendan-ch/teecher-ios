@@ -12,6 +12,9 @@ final class VideoCaptureService: NSObject {
     /// Single-camera capture session (back camera only).
     private let captureSession = AVCaptureSession()
 
+    /// Expose the capture session for preview layer embedding.
+    var session: AVCaptureSession { captureSession }
+
     /// Dedicated queue for all session configuration and running state changes.
     private let sessionQueue = DispatchQueue(label: "VideoCaptureService.sessionQueue")
 

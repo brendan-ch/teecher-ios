@@ -6,13 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		20B8871B2EAD3412006DAA37 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		20B887022EAD3141006DAA37 /* CameraTutorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraTutorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		20B8871D2EAD352A006DAA37 /* Exceptions for "CameraTutorDemo" folder in "CameraTutorDemo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 20B887012EAD3141006DAA37 /* CameraTutorDemo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		20B887042EAD3141006DAA37 /* CameraTutorDemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				20B8871D2EAD352A006DAA37 /* Exceptions for "CameraTutorDemo" folder in "CameraTutorDemo" target */,
+			);
 			path = CameraTutorDemo;
 			sourceTree = "<group>";
 		};
@@ -34,6 +52,7 @@
 			children = (
 				20B887042EAD3141006DAA37 /* CameraTutorDemo */,
 				20B887032EAD3141006DAA37 /* Products */,
+				20B8871A2EAD3412006DAA37 /* CameraPreviewView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -119,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B8871B2EAD3412006DAA37 /* CameraPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +276,8 @@
 				DEVELOPMENT_TEAM = 4A9XHUS87Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CameraTutorDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The app uses the camera to record your tutoring session.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +310,8 @@
 				DEVELOPMENT_TEAM = 4A9XHUS87Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CameraTutorDemo/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The app uses the camera to record your tutoring session.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
