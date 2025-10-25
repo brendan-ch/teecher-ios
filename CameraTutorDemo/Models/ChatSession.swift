@@ -20,7 +20,10 @@ class ChatSession {
     @Transient
     var activeMessage: ChatMessage?
     
-    init(id: UUID, createdAt: Date, updatedAt: Date, messages: [ChatMessage]) {
+    var title: String
+    
+    init(id: UUID = UUID(), title: String, createdAt: Date, updatedAt: Date, messages: [ChatMessage]) {
+        self.title = title
         self.id = id
         self.createdAt = createdAt
         self.updatedAt = updatedAt
