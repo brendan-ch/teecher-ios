@@ -59,9 +59,15 @@ struct ContentView: View {
                     }
                     .zIndex(0)
                 
-                ChatInputBarView(keyboardFocused: $keyboardFocused) { text in
-                    Task {
-                        await submit(text)
+                VStack {
+                    if let selectedChatSession = selectedChatSession {
+                        RecentChatView(session: selectedChatSession)
+                    }
+                    
+                    ChatInputBarView(keyboardFocused: $keyboardFocused) { text in
+                        Task {
+                            await submit(text)
+                        }
                     }
                 }
             }

@@ -9,7 +9,11 @@ import Foundation
 import SwiftData
 
 @Model
-final class ChatMessage {
+final class ChatMessage: Comparable {
+    static func < (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
+        lhs.timestamp < rhs.timestamp
+    }
+    
     enum Role: String, Codable {
         case user
         case assistant
