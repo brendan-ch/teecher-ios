@@ -19,7 +19,7 @@ struct ChatHistoryView: View {
     @State private var query = ""
     
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack(alignment: .leading) {
             ScrollView {
                 Spacer(minLength: 0) // pushes content down
                 if chatSessions.isEmpty {
@@ -31,6 +31,20 @@ struct ChatHistoryView: View {
                         }
                     }
                 }
+            }
+            
+            if !chatSessions.isEmpty {
+                Button(role: .destructive) {
+                    selectedChatSession = nil
+                    for session in chatSessions {
+                        modelContext.delete(session)
+                    }
+                    try? modelContext.save()
+                } label: {
+                    Text("Clear history")
+                }
+                .buttonStyle(.glass)
+                .padding(.horizontal)
             }
         }
     }
