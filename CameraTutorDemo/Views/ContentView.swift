@@ -45,7 +45,11 @@ struct ContentView: View {
                     .ignoresSafeArea()
                     .onAppear {
                         VideoCaptureService.attemptAuthorization()
-                        service.startRunning()
+                        
+                        Task {
+                            try? await Task.sleep(for: .seconds(1))
+                            service.startRunning()
+                        }
                     }
                     .onDisappear {
                         service.stopRunning()

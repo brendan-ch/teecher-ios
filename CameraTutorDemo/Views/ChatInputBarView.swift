@@ -14,14 +14,24 @@ struct ChatInputBarView: View {
     @ObservedObject private var keyboard = KeyboardResponder()
     
     var body: some View {
-        TextField("Ask anything", text: $query)
-            .focused(keyboardFocused)
-            .textFieldStyle(.roundedBorder)
-            .padding(.bottom, keyboard.currentHeight)
-            .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
-            .onSubmit {
+        HStack {
+            TextField("Ask anything", text: $query)
+                .focused(keyboardFocused)
+                .textFieldStyle(.roundedBorder)
+                .onSubmit {
+                    submit(query)
+                }
+            
+            Button {
                 submit(query)
+            } label: {
+                Text("Send")
             }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(.bottom, keyboard.currentHeight)
+        .padding()
+        .padding(EdgeInsets(top: 0, leading: 0, bottom: keyboardFocused.wrappedValue ? 0 : 32, trailing: 0))
     }
 }
 
