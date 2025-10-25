@@ -37,7 +37,7 @@ class ChatSession {
         .init(
             content: "Test message",
             role: .assistant,
-            timestamp: .now,
+            timestamp: .now + 1,
         )
     }
 }
