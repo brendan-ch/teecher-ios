@@ -29,4 +29,15 @@ class ChatSession {
         self.updatedAt = updatedAt
         self.messages = messages
     }
+    
+    func constructChatMessageFromAssistant(
+        session: URLSession = .shared,
+        userChatMessage: ChatMessage,
+    ) async -> ChatMessage {
+        .init(
+            content: "Test message",
+            role: .assistant,
+            timestamp: .now,
+        )
+    }
 }
