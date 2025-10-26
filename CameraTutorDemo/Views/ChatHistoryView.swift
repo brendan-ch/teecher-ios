@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChatHistoryView: View {
     var onDismiss: (() -> Void)?
-    @Binding var selectedChatSessionID: UUID?
+    @Binding var selectedChatSessionID: String?
     @Binding var chatSessions: [ChatSession]
     
     private var orderedSessions: [ChatSession] {
@@ -58,7 +58,7 @@ struct ChatHistoryView: View {
         }
     }
     
-    private func selectChatSession(_ id: UUID) {
+    private func selectChatSession(_ id: String) {
         selectedChatSessionID = id
         if let onDismiss = onDismiss {
             onDismiss()

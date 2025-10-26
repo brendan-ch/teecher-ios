@@ -11,7 +11,7 @@ struct Attachment: Identifiable, Equatable {
         case image, file, audio, video, link, other
     }
     
-    let id: UUID
+    let id: String
     var name: String
     var type: AttachmentType
     var relativePath: String?
@@ -20,7 +20,7 @@ struct Attachment: Identifiable, Equatable {
     var thumbnailData: Data?
     
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         name: String,
         type: AttachmentType,
         relativePath: String? = nil,
@@ -44,7 +44,7 @@ struct Attachment: Identifiable, Equatable {
     
     mutating func save(data: Data, fileExtension: String? = nil) throws {
         let ext = fileExtension ?? (mimeType.flatMap { Self.preferredExtension(for: $0) } ?? "dat")
-        let filename = "\(id.uuidString).\(ext)"
+        let filename = "\(id).\(ext)"
         let url = Self.documentsDirectory.appendingPathComponent(filename)
         
         try data.write(to: url)

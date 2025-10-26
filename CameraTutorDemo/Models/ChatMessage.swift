@@ -14,14 +14,14 @@ struct ChatMessage: Identifiable, Equatable, Comparable {
         case system
     }
     
-    let id: UUID
+    let id: String
     var content: String
     var role: Role
     var attachments: [Attachment]?
     var timestamp: Date
     
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         content: String,
         role: Role,
         attachments: [Attachment]? = nil,

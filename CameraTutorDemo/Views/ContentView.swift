@@ -29,7 +29,7 @@ struct ContentView: View {
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
     @State private var chatSessions: [ChatSession] = []
-    @State private var selectedChatSessionID: UUID?
+    @State private var selectedChatSessionID: String?
 
     private let service = VideoCaptureService()
     

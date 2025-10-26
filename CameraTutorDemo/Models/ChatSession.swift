@@ -1,14 +1,14 @@
 import Foundation
 
 struct ChatSession: Identifiable, Equatable {
-    let id: UUID
+    let id: String
     var title: String
     let createdAt: Date
     var updatedAt: Date
     var messages: [ChatMessage]
     
     init(
-        id: UUID = UUID(),
+        id: String = UUID().uuidString,
         title: String,
         createdAt: Date,
         updatedAt: Date,
@@ -19,6 +19,20 @@ struct ChatSession: Identifiable, Equatable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.messages = messages
+    }
+    
+    /// Create a new session on the server.
+    init(session: URLSession = URLSession.shared) async throws {
+        // TODO: call the server
+        self = .init(title: "", createdAt: .now, updatedAt: .now, messages: [])
+    }
+    
+    /// If the session already exists on the server, use this initializer to create it.
+    init(
+        session: URLSession = URLSession.shared,
+        id: String,
+    ) async throws {
+        self = .init(title: "", createdAt: .now, updatedAt: .now, messages: [])
     }
     
     func constructChatMessageFromAssistant(
