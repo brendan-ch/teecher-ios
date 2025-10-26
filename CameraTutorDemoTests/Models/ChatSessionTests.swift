@@ -33,14 +33,7 @@ class ChatSessionTests {
             }
             """.data(using: .utf8)!
         
-        let decoder = JSONDecoder()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        decoder.dateDecodingStrategy = .formatted(formatter)
-        
-        let result = try decoder.decode(ChatSession.self, from: validJsonData)
+        let result = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: validJsonData)
         #expect(result.id == "session_1761441033386")
         #expect(result.messages.count == 2)
     }
