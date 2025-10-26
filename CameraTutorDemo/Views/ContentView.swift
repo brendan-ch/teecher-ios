@@ -81,7 +81,7 @@ struct ContentView: View {
                             .frame(maxHeight: 256)
                             .mask(alignment: .top) {
                                 LinearGradient(
-                                    gradient: Gradient(colors: [.clear, .black, .black, .black]),
+                                    gradient: Gradient(colors: [.clear, .black, .black, .black, .black, .black]),
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
