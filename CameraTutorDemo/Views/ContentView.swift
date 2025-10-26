@@ -154,7 +154,7 @@ struct ContentView: View {
             var image = Attachment(name: "image-to-be-uploaded", type: .image)
             try image.save(data: data, fileExtension: "jpg")
             
-            var userChatMessage = ChatMessage(
+            let userChatMessage = ChatMessage(
                 content: query,
                 role: .user,
                 timestamp: .now
@@ -163,13 +163,13 @@ struct ContentView: View {
 //            userChatMessage.attachments = [image]
             
             if selectedChatSessionID == nil {
-                let newSession = ChatSession(
-                    title: "New chat session",
-                    timestamp: .now,
-                    messages: []
-                )
-                chatSessions.append(newSession)
-                selectedChatSessionID = newSession.id
+                do {
+                    let newSession = try await ChatSession()
+                    chatSessions.append(newSession)
+                    selectedChatSessionID = newSession.id
+                } catch {
+                    print(error)
+                }
             }
             
             guard

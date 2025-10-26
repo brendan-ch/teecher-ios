@@ -20,14 +20,12 @@ struct ChatSession: Identifiable, Equatable, Codable {
     
     /// Create a new session on the server.
     init(session: URLSession = URLSession.shared) async throws {
-        var request = URLRequest(url: .apiBaseUrl)
+        let requestUrl = URL.apiBaseUrl.appendingPathComponent("/api/new_session")
+        var request = URLRequest(url: requestUrl)
         request.httpMethod = "POST"
         
-        let (data, response) = try await session.data(for: request)
-        
-        
-        // TODO: call the server
-        self = .init(title: "", timestamp: .now, messages: [])
+        let (data, _) = try await session.data(for: request)
+        self = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
     }
     
     /// If the session already exists on the server, use this initializer to create it.
@@ -35,7 +33,12 @@ struct ChatSession: Identifiable, Equatable, Codable {
         session: URLSession = URLSession.shared,
         id: String,
     ) async throws {
-        self = .init(title: "", timestamp: .now, messages: [])
+        let requestUrl = URL.apiBaseUrl.appendingPathComponent("/api/get_session/\(id)")
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "GET"
+        
+        let (data, _) = try await session.data(for: request)
+        self = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
     }
     
     func constructChatMessageFromAssistant(
