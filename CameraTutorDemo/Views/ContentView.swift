@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct BottomPeek<Content: View>: View {
     let peekHeight: CGFloat
@@ -22,8 +21,6 @@ struct BottomPeek<Content: View>: View {
 }
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    
     @FocusState private var keyboardFocused: Bool
     
     @State private var showingLeftSidebar = false
@@ -31,12 +28,16 @@ struct ContentView: View {
 
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
-    
-    @State private var selectedChatSession: ChatSession? = nil
+    @State private var chatSessions: [ChatSession] = []
+    @State private var selectedChatSessionID: UUID?
 
     private let service = VideoCaptureService()
     
     private let sidebarWidth: CGFloat = 320
+    
+    private var selectedChatSession: ChatSession? {
+        chatSessions.first { $0.id == selectedChatSessionID }
+    }
     
     var body: some View {
         ZStack {
@@ -107,7 +108,8 @@ struct ContentView: View {
                             showingLeftSidebar = false
                             baselineOffset()
                         },
-                        selectedChatSession: $selectedChatSession,
+                        selectedChatSessionID: $selectedChatSessionID,
+                        chatSessions: $chatSessions
                     )
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .leading))
@@ -139,6 +141,7 @@ struct ContentView: View {
         baseOffset = offset
     }
     
+    @MainActor
     func submit(_ query: String) async {
         // Capture the current video frame
         let capturedFrame = service.currentFrame
@@ -148,30 +151,43 @@ struct ContentView: View {
         print(data)
         
         do {
-            let image = Attachment(name: "image-to-be-uploaded", type: .image)
+            var image = Attachment(name: "image-to-be-uploaded", type: .image)
             try image.save(data: data, fileExtension: "jpg")
             
-            let userChatMessage = ChatMessage(
+            var userChatMessage = ChatMessage(
                 content: query,
                 role: .user,
                 timestamp: .now
             )
             userChatMessage.attachments = [image]
             
-            if selectedChatSession == nil {
-                selectedChatSession = ChatSession(
+            if selectedChatSessionID == nil {
+                let newSession = ChatSession(
                     title: "New chat session",
                     createdAt: .now,
                     updatedAt: .now,
                     messages: []
                 )
-                modelContext.insert(selectedChatSession!)
+                chatSessions.append(newSession)
+                selectedChatSessionID = newSession.id
             }
             
-            guard let selectedChatSession = selectedChatSession else { return }
-            selectedChatSession.messages.append(userChatMessage)
-            let assistantChatMessage = try await selectedChatSession.constructChatMessageFromAssistant(userChatMessage: userChatMessage)
-            selectedChatSession.messages.append(assistantChatMessage)
+            guard
+                let currentID = selectedChatSessionID,
+                let sessionIndex = chatSessions.firstIndex(where: { $0.id == currentID })
+            else { return }
+            
+            var session = chatSessions[sessionIndex]
+            session.messages.append(userChatMessage)
+            session.updatedAt = .now
+            
+            let assistantChatMessage = try await session.constructChatMessageFromAssistant(
+                userChatMessage: userChatMessage
+            )
+            session.messages.append(assistantChatMessage)
+            session.updatedAt = .now
+            
+            chatSessions[sessionIndex] = session
             
         } catch {
             print("Unable to save image: \(error)")
@@ -198,29 +214,5 @@ struct SidebarView: View {
 
 
 #Preview {
-    let schema = Schema([
-        ChatSession.self,
-        ChatMessage.self,
-        Attachment.self,
-    ])
-    let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-    let modelContainer = try! ModelContainer(for: schema, configurations: [modelConfiguration])
-    
-    let chatSessionToSelect = ChatSession(
-        title: "Sample chat 1",
-        createdAt: .now,
-        updatedAt: .now,
-        messages: []
-    )
-    modelContainer.mainContext.insert(chatSessionToSelect)
-    modelContainer.mainContext.insert(ChatSession(
-        title: "Sample chat 2",
-        createdAt: .now,
-        updatedAt: .now,
-        messages: []
-    ))
-
-    
-    return ContentView()
-        .modelContainer(modelContainer)
+    ContentView()
 }

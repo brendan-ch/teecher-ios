@@ -13,7 +13,8 @@ struct RecentChatView: View {
     
     var messages: [ChatMessage] {
         let messages = session.messages.sorted(by: <)
-        return Array(messages.suffix(from: messages.count - numMessagesToDisplay))
+        let startIndex = max(messages.count - numMessagesToDisplay, 0)
+        return Array(messages.suffix(from: startIndex))
     }
 
     

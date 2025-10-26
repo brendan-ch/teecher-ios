@@ -4,28 +4,23 @@
 //
 //  Created by Brendan Chen on 2025.10.25.
 //
-
 import Foundation
-import SwiftData
 
-@Model
-final class Attachment {
+struct Attachment: Identifiable, Equatable {
     enum AttachmentType: String, Codable {
         case image, file, audio, video, link, other
     }
     
-    var id = UUID()
+    let id: UUID
     var name: String
     var type: AttachmentType
-    var relativePath: String? // relative to Documents directory
+    var relativePath: String?
     var mimeType: String?
     var size: Int?
     var thumbnailData: Data?
     
-    @Relationship(inverse: \ChatMessage.attachments)
-    var message: ChatMessage?
-    
     init(
+        id: UUID = UUID(),
         name: String,
         type: AttachmentType,
         relativePath: String? = nil,
@@ -33,6 +28,7 @@ final class Attachment {
         size: Int? = nil,
         thumbnailData: Data? = nil
     ) {
+        self.id = id
         self.name = name
         self.type = type
         self.relativePath = relativePath
@@ -41,23 +37,19 @@ final class Attachment {
         self.thumbnailData = thumbnailData
     }
     
-    // MARK: - Computed URLs
-    
     var fileURL: URL? {
         guard let relativePath else { return nil }
         return Self.documentsDirectory.appendingPathComponent(relativePath)
     }
     
-    // MARK: - File operations
-    
-    func save(data: Data, fileExtension: String? = nil) throws {
+    mutating func save(data: Data, fileExtension: String? = nil) throws {
         let ext = fileExtension ?? (mimeType.flatMap { Self.preferredExtension(for: $0) } ?? "dat")
         let filename = "\(id.uuidString).\(ext)"
         let url = Self.documentsDirectory.appendingPathComponent(filename)
         
         try data.write(to: url)
-        self.relativePath = filename
-        self.size = data.count
+        relativePath = filename
+        size = data.count
     }
     
     func loadData() throws -> Data? {
@@ -65,13 +57,11 @@ final class Attachment {
         return try Data(contentsOf: fileURL)
     }
     
-    func deleteFile() throws {
+    mutating func deleteFile() throws {
         guard let fileURL else { return }
         try FileManager.default.removeItem(at: fileURL)
         relativePath = nil
     }
-    
-    // MARK: - Static helpers
     
     private static var documentsDirectory: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!

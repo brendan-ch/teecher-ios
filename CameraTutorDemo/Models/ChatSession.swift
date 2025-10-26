@@ -1,30 +1,21 @@
-//
-//  ChatSession.swift
-//  CameraTutorDemo
-//
-//  Created by Brendan Chen on 2025.10.25.
-//
-
 import Foundation
-import SwiftData
 
-@Model
-class ChatSession {
-    var id: UUID
-    var createdAt: Date
+struct ChatSession: Identifiable, Equatable {
+    let id: UUID
+    var title: String
+    let createdAt: Date
     var updatedAt: Date
-    
-    @Relationship(deleteRule: .cascade)
     var messages: [ChatMessage]
     
-    @Transient
-    var activeMessage: ChatMessage?
-    
-    var title: String
-    
-    init(id: UUID = UUID(), title: String, createdAt: Date, updatedAt: Date, messages: [ChatMessage]) {
-        self.title = title
+    init(
+        id: UUID = UUID(),
+        title: String,
+        createdAt: Date,
+        updatedAt: Date,
+        messages: [ChatMessage]
+    ) {
         self.id = id
+        self.title = title
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.messages = messages
@@ -32,12 +23,16 @@ class ChatSession {
     
     func constructChatMessageFromAssistant(
         session: URLSession = .shared,
-        userChatMessage: ChatMessage,
+        userChatMessage: ChatMessage
     ) async throws -> ChatMessage {
         .init(
             content: "Test message",
             role: .assistant,
-            timestamp: .now + 1,
+            timestamp: .now + 1
         )
+    }
+    
+    static func == (lhs: ChatSession, rhs: ChatSession) -> Bool {
+        lhs.id == rhs.id
     }
 }

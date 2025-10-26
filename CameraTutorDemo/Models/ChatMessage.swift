@@ -6,35 +6,40 @@
 //
 
 import Foundation
-import SwiftData
 
-@Model
-final class ChatMessage: Comparable {
-    static func < (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
-        lhs.timestamp < rhs.timestamp
-    }
-    
+struct ChatMessage: Identifiable, Equatable, Comparable {
     enum Role: String, Codable {
         case user
         case assistant
         case system
     }
     
-    var id: UUID
+    let id: UUID
     var content: String
     var role: Role
     var attachments: [Attachment]?
     var timestamp: Date
     
-    @Relationship(inverse: \ChatSession.messages)
-    var session: ChatSession?
-    
-    init(id: UUID = UUID(), content: String, role: Role, attachments: [Attachment]? = nil, timestamp: Date) {
+    init(
+        id: UUID = UUID(),
+        content: String,
+        role: Role,
+        attachments: [Attachment]? = nil,
+        timestamp: Date
+    ) {
         self.id = id
         self.content = content
         self.role = role
         self.attachments = attachments
         self.timestamp = timestamp
+    }
+    
+    static func < (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
+        lhs.timestamp < rhs.timestamp
+    }
+    
+    static func == (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
