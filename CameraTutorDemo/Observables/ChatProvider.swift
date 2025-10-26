@@ -20,12 +20,23 @@ class ChatProvider {
     /// The identifier of the currently selected chat session.
     var selectedChatSessionID: String?
     
+    
     /// Convenience accessor for the currently selected chat session.
     var selectedChatSession: ChatSession? {
         guard let selectedChatSessionID else { return nil }
         return chatSessions.first { $0.id == selectedChatSessionID }
     }
     
+    var lastAssistantMessageOfSelectedSession: ChatMessage? {
+        guard let selectedChatSession = selectedChatSession,
+              let message = selectedChatSession.messages.last(where: { chatMessage in
+                  chatMessage.role == .assistant
+              }) else {
+              return nil
+          }
+        return message
+    }
+
     private struct ChatHistoryServerResponse: Codable {
         let sessions: [ChatSession]
     }

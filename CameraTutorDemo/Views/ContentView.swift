@@ -30,25 +30,26 @@ struct ContentView: View {
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
 
-    private let service = VideoCaptureService()
+    private let videoCaptureService = VideoCaptureService()
+    private let audioPlayerService = AudioPlayerService()
     
     private let sidebarWidth: CGFloat = 320
     
     var body: some View {
         ZStack {
             ZStack(alignment: .bottom) {
-                CameraPreviewView(session: service.session)
+                CameraPreviewView(session: videoCaptureService.session)
                     .ignoresSafeArea()
                     .onAppear {
                         VideoCaptureService.attemptAuthorization()
                         
                         Task {
                             try? await Task.sleep(for: .seconds(1))
-                            service.startRunning()
+                            videoCaptureService.startRunning()
                         }
                     }
                     .onDisappear {
-                        service.stopRunning()
+                        videoCaptureService.stopRunning()
                     }
                     .onTapGesture {
                         keyboardFocused = false
@@ -125,13 +126,27 @@ struct ContentView: View {
     @MainActor
     func submit(_ query: String) async {
         // Capture the current video frame
-        let capturedFrame = service.currentFrame
+        let capturedFrame = videoCaptureService.currentFrame
         guard let data = capturedFrame?.toJpegData() else {
             return
         }
         print(data)
 
         await chatProvider.submit(query, capturedImageData: data)
+        
+        do {
+            guard let lastMessage = chatProvider.lastAssistantMessageOfSelectedSession else {
+                return
+            }
+            
+            let tts = try await TTSAudio(text: lastMessage.content)
+            guard let data = tts.asData() else {
+                return
+            }
+            audioPlayerService.playAudio(data)
+        } catch {
+            print("Failed to create TTS: \(error)")
+        }
     }
 }
 
