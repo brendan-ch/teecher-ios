@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct CameraTutorDemoApp: App {
+    @State private var chatProvider = ChatProvider()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(chatProvider)
         }
     }
 }

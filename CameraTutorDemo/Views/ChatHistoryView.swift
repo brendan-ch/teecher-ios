@@ -9,24 +9,19 @@ import SwiftUI
 
 struct ChatHistoryView: View {
     var onDismiss: (() -> Void)?
-    @Binding var selectedChatSessionID: String?
-    @Binding var chatSessions: [ChatSession]
-    
-    private var orderedSessions: [ChatSession] {
-        chatSessions.sorted { $0.timestamp > $1.timestamp }
-    }
+    @Environment(ChatProvider.self) private var chatProvider
     
     var body: some View {
         VStack(alignment: .leading) {
             ScrollView {
                 Spacer(minLength: 0) // pushes content down
-                if orderedSessions.isEmpty {
+                if chatProvider.sortedChatSessions.isEmpty {
                     Text("No chat history.")
                 } else {
-                    ForEach(orderedSessions) { chatSession in
+                    ForEach(chatProvider.sortedChatSessions) { chatSession in
                         Divider()
                         ChatSessionListButton(
-                            isSelected: selectedChatSessionID == chatSession.id,
+                            isSelected: chatProvider.selectedChatSessionID == chatSession.id,
                             chatSession: chatSession
                         ) {
                             selectChatSession(chatSession.id)
@@ -35,10 +30,10 @@ struct ChatHistoryView: View {
                 }
             }
             
-            if !orderedSessions.isEmpty {
+            if !chatProvider.sortedChatSessions.isEmpty {
                 VStack(alignment: .leading) {
                     Button {
-                        selectedChatSessionID = nil
+                        chatProvider.selectChatSession(nil)
                     } label: {
                         Text("New chat")
                     }
@@ -46,8 +41,7 @@ struct ChatHistoryView: View {
                     .padding(.horizontal)
 
                     Button(role: .destructive) {
-                        selectedChatSessionID = nil
-                        chatSessions.removeAll()
+                        chatProvider.clearHistory()
                     } label: {
                         Text("Clear history")
                     }
@@ -59,7 +53,7 @@ struct ChatHistoryView: View {
     }
     
     private func selectChatSession(_ id: String) {
-        selectedChatSessionID = id
+        chatProvider.selectChatSession(id)
         if let onDismiss = onDismiss {
             onDismiss()
         }
@@ -67,20 +61,21 @@ struct ChatHistoryView: View {
 }
 
 #Preview {
-    ChatHistoryView(
-        onDismiss: nil,
-        selectedChatSessionID: .constant(nil),
-        chatSessions: .constant([
-            .init(
-                title: "Sample chat 1",
-                timestamp: .now,
-                messages: []
-            ),
-            .init(
-                title: "Sample chat 2",
-                timestamp: .now,
-                messages: []
-            )
-        ])
+    let provider = ChatProvider()
+    provider.chatSessions = [
+        .init(
+            title: "Sample chat 1",
+            timestamp: .now,
+            messages: []
+        ),
+        .init(
+            title: "Sample chat 2",
+            timestamp: .now,
+            messages: []
+        )
+    ]
+    return ChatHistoryView(
+        onDismiss: nil
     )
+    .environment(provider)
 }

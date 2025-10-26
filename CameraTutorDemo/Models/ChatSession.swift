@@ -13,11 +13,20 @@ struct ChatSessionResponse: Codable {
     let success: Bool
 }
 
-struct ChatSession: Identifiable, Equatable, Codable {
+@Observable
+class ChatSession: Identifiable, Equatable, Codable {
     let id: String
     var title: String?
     var timestamp: Date
     var messages: [ChatMessage]
+    
+    enum CodingKeys: String, CodingKey {
+        // To make it work with Observable, we need to map to underlying properties
+        case _timestamp = "timestamp"
+        case _messages = "messages"
+        case _title = "title"
+        case id = "id"
+    }
     
     init(
         id: String = UUID().uuidString,
@@ -32,29 +41,30 @@ struct ChatSession: Identifiable, Equatable, Codable {
     }
     
     /// Create a new session on the server.
-    init(session: URLSession = URLSession.shared) async throws {
+    static func create(session: URLSession = URLSession.shared) async throws -> ChatSession {
         let requestUrl = URL.apiBaseUrl.appendingPathComponent("/api/new_session")
         var request = URLRequest(url: requestUrl)
         request.httpMethod = "POST"
         
         let (data, _) = try await session.data(for: request)
-        self = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
+        let decoded = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
+        return decoded
     }
     
     /// If the session already exists on the server, use this initializer to create it.
-    init(
+    static func creat(
         session: URLSession = URLSession.shared,
         id: String,
-    ) async throws {
+    ) async throws -> ChatSession {
         let requestUrl = URL.apiBaseUrl.appendingPathComponent("/api/get_session/\(id)")
         var request = URLRequest(url: requestUrl)
         request.httpMethod = "GET"
         
         let (data, _) = try await session.data(for: request)
-        self = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
+        return try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
     }
     
-    mutating func addChatResponseFromAssistant(
+    func addChatResponseFromAssistant(
         session: URLSession = .shared,
         userChatMessage: ChatMessage,
         attachment: JPEGAttachment?,
@@ -78,7 +88,7 @@ struct ChatSession: Identifiable, Equatable, Codable {
         
         let (data, _) = try await session.data(for: request)
         let decoded = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSessionResponse.self, from: data)
-        self = decoded.session
+        self.messages = decoded.session.messages
     }
     
     static func == (lhs: ChatSession, rhs: ChatSession) -> Bool {

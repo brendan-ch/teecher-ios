@@ -22,22 +22,18 @@ struct BottomPeek<Content: View>: View {
 
 struct ContentView: View {
     @FocusState private var keyboardFocused: Bool
+
+    @Environment(ChatProvider.self) private var chatProvider
     
     @State private var showingLeftSidebar = false
     @State private var showingRightSidebar = false
 
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
-    @State private var chatSessions: [ChatSession] = []
-    @State private var selectedChatSessionID: String?
 
     private let service = VideoCaptureService()
     
     private let sidebarWidth: CGFloat = 320
-    
-    private var selectedChatSession: ChatSession? {
-        chatSessions.first { $0.id == selectedChatSessionID }
-    }
     
     var body: some View {
         ZStack {
@@ -61,7 +57,7 @@ struct ContentView: View {
                     .zIndex(0)
                 
                 VStack {
-                    if let selectedChatSession = selectedChatSession {
+                    if let selectedChatSession = chatProvider.selectedChatSession {
                         RecentChatView(session: selectedChatSession)
                     }
                     
@@ -107,9 +103,7 @@ struct ContentView: View {
                         onDismiss: {
                             showingLeftSidebar = false
                             baselineOffset()
-                        },
-                        selectedChatSessionID: $selectedChatSessionID,
-                        chatSessions: $chatSessions
+                        }
                     )
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .leading))
@@ -126,7 +120,7 @@ struct ContentView: View {
                             showingRightSidebar = false
                             baselineOffset()
                         },
-                        session: selectedChatSession
+                        session: chatProvider.selectedChatSession
                     )
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .trailing))
@@ -149,42 +143,8 @@ struct ContentView: View {
             return
         }
         print(data)
-        
-        do {
-            var image = JPEGAttachment(name: "image-to-be-uploaded", type: .image)
-            try image.save(data: data, fileExtension: "jpg")
-            
-            let userChatMessage = ChatMessage(
-                content: query,
-                role: .user,
-                timestamp: .now
-            )
-            
-            if selectedChatSessionID == nil {
-                do {
-                    let newSession = try await ChatSession()
-                    chatSessions.append(newSession)
-                    selectedChatSessionID = newSession.id
-                } catch {
-                    print(error)
-                }
-            }
-            
-            guard
-                let currentID = selectedChatSessionID,
-                let sessionIndex = chatSessions.firstIndex(where: { $0.id == currentID })
-            else { return }
-            
-            var session = chatSessions[sessionIndex]
-            session.messages.append(userChatMessage)
-            session.timestamp = .now
-            
-            try await session.addChatResponseFromAssistant(userChatMessage: userChatMessage, attachment: image)
-            
-            chatSessions[sessionIndex] = session
-        } catch {
-            print("Unable to save image: \(error)")
-        }
+
+        await chatProvider.submit(query, capturedImageData: data)
     }
 }
 
@@ -208,4 +168,5 @@ struct SidebarView: View {
 
 #Preview {
     ContentView()
+        .environment(ChatProvider())
 }
