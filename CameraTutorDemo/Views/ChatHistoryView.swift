@@ -25,6 +25,7 @@ struct ChatHistoryView: View {
                     Text("No chat history.")
                 } else {
                     ForEach(chatSessions) { chatSession in
+                        Divider()
                         ChatSessionListButton(isSelected: selectedChatSession == chatSession, chatSession: chatSession) {
                             selectChatSession(chatSession)
                         }
