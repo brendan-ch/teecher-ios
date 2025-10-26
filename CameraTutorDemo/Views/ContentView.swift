@@ -29,6 +29,8 @@ struct ContentView: View {
 
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
+    
+    @State private var ttsEnabled = true
 
     private let videoCaptureService = VideoCaptureService()
     private let audioPlayerService = AudioPlayerService()
@@ -38,23 +40,33 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             ZStack(alignment: .bottom) {
-                CameraPreviewView(session: videoCaptureService.session)
-                    .ignoresSafeArea()
-                    .onAppear {
-                        VideoCaptureService.attemptAuthorization()
-                        
-                        Task {
-                            try? await Task.sleep(for: .seconds(1))
-                            videoCaptureService.startRunning()
+                NavigationStack {
+                    CameraPreviewView(session: videoCaptureService.session)
+                        .ignoresSafeArea()
+                        .onAppear {
+                            VideoCaptureService.attemptAuthorization()
+                            
+                            Task {
+                                try? await Task.sleep(for: .seconds(1))
+                                videoCaptureService.startRunning()
+                            }
                         }
-                    }
-                    .onDisappear {
-                        videoCaptureService.stopRunning()
-                    }
-                    .onTapGesture {
-                        keyboardFocused = false
-                    }
-                    .zIndex(0)
+                        .onDisappear {
+                            videoCaptureService.stopRunning()
+                        }
+                        .onTapGesture {
+                            keyboardFocused = false
+                        }
+                        .zIndex(0)
+                        .toolbar {
+                            ToolbarItem {
+                                Button("Toggle Audio", systemImage: "waveform.mid") {
+                                    ttsEnabled.toggle()
+                                }
+                                .tint(ttsEnabled ? .accentColor : .primary)
+                            }
+                        }
+                }
                 
                 VStack {
                     if let selectedChatSession = chatProvider.selectedChatSession {
@@ -110,8 +122,8 @@ struct ContentView: View {
                             baselineOffset()
                         }
                     )
-                        .frame(width: sidebarWidth)
-                        .transition(.move(edge: .leading))
+                    .frame(width: sidebarWidth)
+                    .transition(.move(edge: .leading))
                     Spacer()
                 }
             }
@@ -134,18 +146,20 @@ struct ContentView: View {
 
         await chatProvider.submit(query, capturedImageData: data)
         
-        do {
-            guard let lastMessage = chatProvider.lastAssistantMessageOfSelectedSession else {
-                return
+        if ttsEnabled {
+            do {
+                guard let lastMessage = chatProvider.lastAssistantMessageOfSelectedSession else {
+                    return
+                }
+                
+                let tts = try await TTSAudio(text: lastMessage.content)
+                guard let data = tts.asData() else {
+                    return
+                }
+                audioPlayerService.playAudio(data)
+            } catch {
+                print("Failed to create TTS: \(error)")
             }
-            
-            let tts = try await TTSAudio(text: lastMessage.content)
-            guard let data = tts.asData() else {
-                return
-            }
-            audioPlayerService.playAudio(data)
-        } catch {
-            print("Failed to create TTS: \(error)")
         }
     }
 }
