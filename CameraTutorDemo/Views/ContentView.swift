@@ -151,7 +151,7 @@ struct ContentView: View {
         print(data)
         
         do {
-            var image = Attachment(name: "image-to-be-uploaded", type: .image)
+            var image = JPEGAttachment(name: "image-to-be-uploaded", type: .image)
             try image.save(data: data, fileExtension: "jpg")
             
             let userChatMessage = ChatMessage(
@@ -159,8 +159,6 @@ struct ContentView: View {
                 role: .user,
                 timestamp: .now
             )
-            // TODO: Send the image to the server
-//            userChatMessage.attachments = [image]
             
             if selectedChatSessionID == nil {
                 do {
@@ -181,14 +179,9 @@ struct ContentView: View {
             session.messages.append(userChatMessage)
             session.timestamp = .now
             
-            let assistantChatMessage = try await session.constructChatMessageFromAssistant(
-                userChatMessage: userChatMessage
-            )
-            session.messages.append(assistantChatMessage)
-            session.timestamp = .now
+            try await session.addChatResponseFromAssistant(userChatMessage: userChatMessage, attachment: image)
             
             chatSessions[sessionIndex] = session
-            
         } catch {
             print("Unable to save image: \(error)")
         }

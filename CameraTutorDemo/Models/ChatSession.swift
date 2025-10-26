@@ -1,5 +1,18 @@
 import Foundation
 
+/// What is returned by `/api/send_message`.
+struct ChatSessionResponse: Codable {
+    enum CodingKeys: String, CodingKey {
+        case session = "session"
+        case shouldRestart = "should_restart"
+        case success = "success"
+    }
+    
+    let session: ChatSession
+    let shouldRestart: Bool
+    let success: Bool
+}
+
 struct ChatSession: Identifiable, Equatable, Codable {
     let id: String
     var title: String?
@@ -41,15 +54,31 @@ struct ChatSession: Identifiable, Equatable, Codable {
         self = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSession.self, from: data)
     }
     
-    func constructChatMessageFromAssistant(
+    mutating func addChatResponseFromAssistant(
         session: URLSession = .shared,
-        userChatMessage: ChatMessage
-    ) async throws -> ChatMessage {
-        .init(
-            content: "Test message",
-            role: .assistant,
-            timestamp: .now + 1
-        )
+        userChatMessage: ChatMessage,
+        attachment: JPEGAttachment?,
+    ) async throws {
+        messages.append(userChatMessage)
+        
+        let requestUrl = URL.apiBaseUrl.appendingPathComponent("/api/send_message")
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "POST"
+        
+        var requestBodyDict = [
+            "session_id": self.id,
+            "message": userChatMessage.content
+        ]
+        if let attachment = attachment,
+           let base64Encoded = try attachment.loadDataAsBase64() {
+            requestBodyDict["image"] = base64Encoded
+        }
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBodyDict)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let (data, _) = try await session.data(for: request)
+        let decoded = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSessionResponse.self, from: data)
+        self = decoded.session
     }
     
     static func == (lhs: ChatSession, rhs: ChatSession) -> Bool {

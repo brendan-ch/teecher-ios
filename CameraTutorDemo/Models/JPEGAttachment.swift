@@ -1,14 +1,14 @@
 //
-//  Attachment.swift
+//  JPEGAttachment.swift
 //  CameraTutorDemo
 //
 //  Created by Brendan Chen on 2025.10.25.
 //
 import Foundation
 
-struct Attachment: Identifiable, Equatable, Codable {
+struct JPEGAttachment: Identifiable, Equatable, Codable {
     enum AttachmentType: String, Codable {
-        case image, file, audio, video, link, other
+        case image
     }
     
     let id: String
@@ -50,6 +50,15 @@ struct Attachment: Identifiable, Equatable, Codable {
         try data.write(to: url)
         relativePath = filename
         size = data.count
+    }
+    
+    func loadDataAsBase64() throws -> String? {
+        let prefix = "data:image/jpeg;base64,"
+        let encodedString = try loadData()?.base64EncodedString()
+        if let encodedString = encodedString {
+            return prefix + encodedString
+        }
+        return nil
     }
     
     func loadData() throws -> Data? {
