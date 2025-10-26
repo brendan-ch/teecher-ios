@@ -60,6 +60,13 @@ struct ContentView: View {
                     if let selectedChatSession = chatProvider.selectedChatSession {
                         ChatView(session: selectedChatSession)
                             .frame(maxHeight: 400)
+                            .mask(alignment: .top) {
+                                LinearGradient(
+                                    gradient: Gradient(colors: [.clear, .black, .black, .black]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            }
                     }
                     
                     ChatInputBarView(keyboardFocused: $keyboardFocused) { text in

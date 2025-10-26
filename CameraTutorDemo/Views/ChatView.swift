@@ -12,7 +12,9 @@ struct ChatView: View {
     var session: ChatSession?
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
+            Color.clear.frame(height: 128)
+            
             LazyVStack {
                 if let session = session {
                     if session.messages.isEmpty {
