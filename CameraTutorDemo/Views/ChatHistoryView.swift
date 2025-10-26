@@ -16,7 +16,6 @@ struct ChatHistoryView: View {
     
     @Environment(\.modelContext) var modelContext
     
-    @State private var query = ""
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +25,7 @@ struct ChatHistoryView: View {
                     Text("No chat history.")
                 } else {
                     ForEach(chatSessions) { chatSession in
-                        ChatSessionListButton(chatSession: chatSession) {
+                        ChatSessionListButton(isSelected: selectedChatSession == chatSession, chatSession: chatSession) {
                             selectedChatSession = chatSession
                         }
                     }
@@ -73,7 +72,9 @@ struct ChatHistoryView: View {
         messages: []
     ))
 
-    return ChatHistoryView(selectedChatSession: .constant(chatSessionToSelect))
+    return ChatHistoryView(
+        selectedChatSession: .constant(chatSessionToSelect)
+    )
         .modelContainer(modelContainer)
 }
 
