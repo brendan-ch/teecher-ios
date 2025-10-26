@@ -58,7 +58,8 @@ struct ContentView: View {
                 
                 VStack {
                     if let selectedChatSession = chatProvider.selectedChatSession {
-                        RecentChatView(session: selectedChatSession)
+                        ChatView(session: selectedChatSession)
+                            .frame(maxHeight: 400)
                     }
                     
                     ChatInputBarView(keyboardFocused: $keyboardFocused) { text in

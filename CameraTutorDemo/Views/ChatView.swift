@@ -27,6 +27,7 @@ struct ChatView: View {
                 }
             }
         }
+        .defaultScrollAnchor(.bottom)
     }
     
     func submit() {
