@@ -1,3 +1,4 @@
+import FoundationModels
 import Foundation
 
 /// What is returned by `/api/send_message`.
@@ -18,6 +19,7 @@ class ChatSession: Identifiable, Equatable, Codable {
     let id: String
     var title: String?
     var timestamp: Date
+    var updatedAt: Date?
     var messages: [ChatMessage]
     
     enum CodingKeys: String, CodingKey {
@@ -25,6 +27,7 @@ class ChatSession: Identifiable, Equatable, Codable {
         case _timestamp = "timestamp"
         case _messages = "messages"
         case _title = "title"
+        case _updatedAt = "updated_at"
         case id = "id"
     }
     
@@ -52,7 +55,7 @@ class ChatSession: Identifiable, Equatable, Codable {
     }
     
     /// If the session already exists on the server, use this initializer to create it.
-    static func creat(
+    static func create(
         session: URLSession = URLSession.shared,
         id: String,
     ) async throws -> ChatSession {
@@ -89,6 +92,50 @@ class ChatSession: Identifiable, Equatable, Codable {
         let (data, _) = try await session.data(for: request)
         let decoded = try JSONDecoder.decoderSupportingIso8601WithMicroseconds.decode(ChatSessionResponse.self, from: data)
         self.messages = decoded.session.messages
+    }
+    
+    func setTitleBasedOnMessagesIfBlankAndAvailable(
+        session: URLSession = URLSession.shared,
+        model: SystemLanguageModel = SystemLanguageModel.default
+    ) async {
+        if title != nil {
+            return
+        }
+        if !model.isAvailable {
+            return
+        }
+        
+        let instructions = "Write a short title describing the chat message that is the prompt, in 3-4 words. Do not use emojis. Only output the title, and do not output anything else."
+        let session = LanguageModelSession(instructions: instructions)
+        
+        guard let prompt = messages.last?.content,
+              let response = try? await session.respond(to: prompt) else {
+            return
+        }
+        
+        self.title = response.content
+        
+        try? await updateTitleOnServer()
+    }
+    
+    func updateTitleOnServer(
+        session: URLSession = URLSession.shared,
+    ) async throws {
+        guard let title = self.title else {
+            return
+        }
+        
+        let url: URL = .apiBaseUrl.appendingPathComponent("/chat/session/\(self.id)")
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestDictionary = [
+            "title": title
+        ]
+        request.httpBody = try JSONEncoder().encode(requestDictionary)
+        
+        let (_, _) = try await session.data(for: request)
     }
     
     static func == (lhs: ChatSession, rhs: ChatSession) -> Bool {

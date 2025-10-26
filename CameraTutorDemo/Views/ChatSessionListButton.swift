@@ -19,6 +19,8 @@ struct ChatSessionListButton: View {
                     VStack(alignment: .leading) {
                         Text(chatSession.title ?? "Untitled chat")
                             .bold()
+                            .lineLimit(1, reservesSpace: false)
+                            .multilineTextAlignment(.leading)
                         Text(chatSession.timestamp.formatted(date: .numeric, time: .shortened))
                     }
                     Spacer()

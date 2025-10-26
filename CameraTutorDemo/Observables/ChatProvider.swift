@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FoundationModels
 
 /// Central provider of all chats.
 @MainActor
@@ -40,6 +41,8 @@ class ChatProvider {
     private struct ChatHistoryServerResponse: Codable {
         let sessions: [ChatSession]
     }
+    
+    private var model = SystemLanguageModel.default
     
     func loadSessionsFromServer() async {
         let url: URL = .apiBaseUrl.appendingPathComponent("/api/sessions")
@@ -103,6 +106,8 @@ class ChatProvider {
                 userChatMessage: userChatMessage,
                 attachment: attachment
             )
+            
+            await session.setTitleBasedOnMessagesIfBlankAndAvailable()
         } catch {
             print("Failed to submit chat message: \(error)")
         }
