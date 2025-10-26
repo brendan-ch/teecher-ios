@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct Attachment: Identifiable, Equatable {
+struct Attachment: Identifiable, Equatable, Codable {
     enum AttachmentType: String, Codable {
         case image, file, audio, video, link, other
     }

@@ -7,39 +7,41 @@
 
 import Foundation
 
-struct ChatMessage: Identifiable, Equatable, Comparable {
+struct ChatMessage: Identifiable, Equatable, Comparable, Codable {
+    var id: String {
+        content + timestamp.description
+    }
+    
     enum Role: String, Codable {
         case user
         case assistant
         case system
     }
     
-    let id: String
+    enum CodingKeys: String, CodingKey {
+        case content = "content"
+        case role = "role"
+        case timestamp = "timestamp"
+        case hasImage = "has_image"
+    }
+    
     var content: String
     var role: Role
-    var attachments: [Attachment]?
     var timestamp: Date
+    var hasImage: Bool?
     
     init(
-        id: String = UUID().uuidString,
         content: String,
         role: Role,
-        attachments: [Attachment]? = nil,
         timestamp: Date
     ) {
-        self.id = id
         self.content = content
         self.role = role
-        self.attachments = attachments
         self.timestamp = timestamp
     }
     
     static func < (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
         lhs.timestamp < rhs.timestamp
-    }
-    
-    static func == (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
-        lhs.id == rhs.id
     }
 }
 

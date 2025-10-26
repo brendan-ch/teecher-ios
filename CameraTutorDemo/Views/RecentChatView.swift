@@ -33,8 +33,7 @@ struct RecentChatView: View {
     RecentChatView(
         session: .init(
             title: "Test session",
-            createdAt: .distantPast,
-            updatedAt: .now,
+            timestamp: .distantPast,
             messages: [
                 .sampleUserMessage,
                 .sampleAssistantMessage

@@ -38,8 +38,7 @@ struct ChatView: View {
 #Preview {
     ChatView(session: .init(
         title: "Sample chat",
-        createdAt: .distantPast,
-        updatedAt: .now,
+        timestamp: .now,
         messages: [
             .sampleUserMessage,
             .sampleAssistantMessage,

@@ -13,7 +13,7 @@ struct ChatHistoryView: View {
     @Binding var chatSessions: [ChatSession]
     
     private var orderedSessions: [ChatSession] {
-        chatSessions.sorted { $0.updatedAt > $1.updatedAt }
+        chatSessions.sorted { $0.timestamp > $1.timestamp }
     }
     
     var body: some View {
@@ -73,14 +73,12 @@ struct ChatHistoryView: View {
         chatSessions: .constant([
             .init(
                 title: "Sample chat 1",
-                createdAt: .now,
-                updatedAt: .now,
+                timestamp: .now,
                 messages: []
             ),
             .init(
                 title: "Sample chat 2",
-                createdAt: .now,
-                updatedAt: .now,
+                timestamp: .now,
                 messages: []
             )
         ])

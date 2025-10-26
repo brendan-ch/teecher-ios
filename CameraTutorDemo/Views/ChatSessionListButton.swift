@@ -17,9 +17,9 @@ struct ChatSessionListButton: View {
             VStack {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(chatSession.title)
+                        Text(chatSession.title ?? "Untitled chat")
                             .bold()
-                        Text(chatSession.updatedAt.formatted(date: .numeric, time: .shortened))
+                        Text(chatSession.timestamp.formatted(date: .numeric, time: .shortened))
                     }
                     Spacer()
                 }
@@ -35,8 +35,7 @@ struct ChatSessionListButton: View {
         isSelected: false,
         chatSession: .init(
             title: "Sample chat",
-            createdAt: .distantPast,
-            updatedAt: .now,
+            timestamp: .now,
             messages: []
         ),
         action: {

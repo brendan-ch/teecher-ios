@@ -159,13 +159,13 @@ struct ContentView: View {
                 role: .user,
                 timestamp: .now
             )
-            userChatMessage.attachments = [image]
+            // TODO: Send the image to the server
+//            userChatMessage.attachments = [image]
             
             if selectedChatSessionID == nil {
                 let newSession = ChatSession(
                     title: "New chat session",
-                    createdAt: .now,
-                    updatedAt: .now,
+                    timestamp: .now,
                     messages: []
                 )
                 chatSessions.append(newSession)
@@ -179,13 +179,13 @@ struct ContentView: View {
             
             var session = chatSessions[sessionIndex]
             session.messages.append(userChatMessage)
-            session.updatedAt = .now
+            session.timestamp = .now
             
             let assistantChatMessage = try await session.constructChatMessageFromAssistant(
                 userChatMessage: userChatMessage
             )
             session.messages.append(assistantChatMessage)
-            session.updatedAt = .now
+            session.timestamp = .now
             
             chatSessions[sessionIndex] = session
             
