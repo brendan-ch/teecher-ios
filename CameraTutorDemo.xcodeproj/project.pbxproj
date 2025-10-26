@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		20DE90752EADC56A0035E60B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20B886FA2EAD3141006DAA37 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 20B887012EAD3141006DAA37;
+			remoteInfo = CameraTutorDemo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		20B887022EAD3141006DAA37 /* CameraTutorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraTutorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20DE90712EADC56A0035E60B /* CameraTutorDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CameraTutorDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +40,22 @@
 			path = CameraTutorDemo;
 			sourceTree = "<group>";
 		};
+		20DE90722EADC56A0035E60B /* CameraTutorDemoTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CameraTutorDemoTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		20B886FF2EAD3141006DAA37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20DE906E2EADC56A0035E60B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				20B887042EAD3141006DAA37 /* CameraTutorDemo */,
+				20DE90722EADC56A0035E60B /* CameraTutorDemoTests */,
 				20B887032EAD3141006DAA37 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				20B887022EAD3141006DAA37 /* CameraTutorDemo.app */,
+				20DE90712EADC56A0035E60B /* CameraTutorDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +108,29 @@
 			productReference = 20B887022EAD3141006DAA37 /* CameraTutorDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		20DE90702EADC56A0035E60B /* CameraTutorDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 20DE90792EADC56A0035E60B /* Build configuration list for PBXNativeTarget "CameraTutorDemoTests" */;
+			buildPhases = (
+				20DE906D2EADC56A0035E60B /* Sources */,
+				20DE906E2EADC56A0035E60B /* Frameworks */,
+				20DE906F2EADC56A0035E60B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				20DE90762EADC56A0035E60B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				20DE90722EADC56A0035E60B /* CameraTutorDemoTests */,
+			);
+			name = CameraTutorDemoTests;
+			packageProductDependencies = (
+			);
+			productName = CameraTutorDemoTests;
+			productReference = 20DE90712EADC56A0035E60B /* CameraTutorDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +143,10 @@
 				TargetAttributes = {
 					20B887012EAD3141006DAA37 = {
 						CreatedOnToolsVersion = 26.0.1;
+					};
+					20DE90702EADC56A0035E60B = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 20B887012EAD3141006DAA37;
 					};
 				};
 			};
@@ -113,12 +165,20 @@
 			projectRoot = "";
 			targets = (
 				20B887012EAD3141006DAA37 /* CameraTutorDemo */,
+				20DE90702EADC56A0035E60B /* CameraTutorDemoTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		20B887002EAD3141006DAA37 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20DE906F2EADC56A0035E60B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +195,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		20DE906D2EADC56A0035E60B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		20DE90762EADC56A0035E60B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 20B887012EAD3141006DAA37 /* CameraTutorDemo */;
+			targetProxy = 20DE90752EADC56A0035E60B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		20B8870B2EAD3142006DAA37 /* Debug */ = {
@@ -329,6 +404,48 @@
 			};
 			name = Release;
 		};
+		20DE90772EADC56A0035E60B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4A9XHUS87Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.bchen.CameraTutorDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CameraTutorDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CameraTutorDemo";
+			};
+			name = Debug;
+		};
+		20DE90782EADC56A0035E60B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4A9XHUS87Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.bchen.CameraTutorDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CameraTutorDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CameraTutorDemo";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -346,6 +463,15 @@
 			buildConfigurations = (
 				20B8870E2EAD3142006DAA37 /* Debug */,
 				20B8870F2EAD3142006DAA37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		20DE90792EADC56A0035E60B /* Build configuration list for PBXNativeTarget "CameraTutorDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20DE90772EADC56A0035E60B /* Debug */,
+				20DE90782EADC56A0035E60B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
