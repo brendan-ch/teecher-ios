@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		20B150752EAE1E06004F06E2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 20B150742EAE1E06004F06E2 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		20DE90752EADC56A0035E60B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -17,6 +21,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20B150742EAE1E06004F06E2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		20B887022EAD3141006DAA37 /* CameraTutorDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraTutorDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		20DE90712EADC56A0035E60B /* CameraTutorDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CameraTutorDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -68,6 +73,7 @@
 		20B886F92EAD3141006DAA37 = {
 			isa = PBXGroup;
 			children = (
+				20B150742EAE1E06004F06E2 /* README.md */,
 				20B887042EAD3141006DAA37 /* CameraTutorDemo */,
 				20DE90722EADC56A0035E60B /* CameraTutorDemoTests */,
 				20B887032EAD3141006DAA37 /* Products */,
@@ -175,6 +181,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B150752EAE1E06004F06E2 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
