@@ -59,8 +59,15 @@ struct ContentView: View {
                         }
                         .zIndex(0)
                         .toolbar {
-                            ToolbarItem {
-                                Button("Toggle Audio", systemImage: "waveform.mid") {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button("Toggle chat history", systemImage: "list.bullet") {
+                                    showingLeftSidebar.toggle()
+                                    baselineOffset()
+                                }
+                            }
+                            
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Toggle audio", systemImage: "waveform.mid") {
                                     ttsEnabled.toggle()
                                 }
                                 .tint(ttsEnabled ? .accentColor : .primary)
