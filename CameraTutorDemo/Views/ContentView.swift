@@ -78,7 +78,7 @@ struct ContentView: View {
                 VStack {
                     if let selectedChatSession = chatProvider.selectedChatSession {
                         ChatView(session: selectedChatSession)
-                            .frame(maxHeight: 400)
+                            .frame(maxHeight: 256)
                             .mask(alignment: .top) {
                                 LinearGradient(
                                     gradient: Gradient(colors: [.clear, .black, .black, .black]),
