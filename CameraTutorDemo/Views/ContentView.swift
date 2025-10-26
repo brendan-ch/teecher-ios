@@ -77,9 +77,11 @@ struct ContentView: View {
                 }
             }
             .offset(x: offset)
-            .gesture(
+            .simultaneousGesture(
                 DragGesture()
                     .onChanged { value in
+                        // Only react if the drag is mostly horizontal
+                        guard abs(value.translation.width) > abs(value.translation.height) else { return }
                         offset = baseOffset + value.translation.width
                     }
                     .onEnded { value in
