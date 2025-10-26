@@ -50,6 +50,11 @@ struct ChatHistoryView: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                await chatProvider.loadSessionsFromServer()
+            }
+        }
     }
     
     private func selectChatSession(_ id: String) {
