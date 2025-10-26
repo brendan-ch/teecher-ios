@@ -26,7 +26,6 @@ struct ContentView: View {
     @Environment(ChatProvider.self) private var chatProvider
     
     @State private var showingLeftSidebar = false
-    @State private var showingRightSidebar = false
 
     @State private var baseOffset: CGFloat = 0
     @State private var offset: CGFloat = 0
@@ -89,13 +88,8 @@ struct ContentView: View {
                             
                             if actualOffset > 100 {
                                 showingLeftSidebar = true
-                                showingRightSidebar = false
-                            } else if actualOffset < -100 {
-                                showingRightSidebar = true
-                                showingLeftSidebar = false
                             } else {
                                 showingLeftSidebar = false
-                                showingRightSidebar = false
                             }
                             baselineOffset()
                         }
@@ -118,28 +112,11 @@ struct ContentView: View {
                     Spacer()
                 }
             }
-            
-            // MARK: - Right Sidebar
-            if showingRightSidebar {
-                HStack {
-                    Spacer()
-                    ChatView(
-                        onDismiss: {
-                            showingRightSidebar = false
-                            baselineOffset()
-                        },
-                        session: chatProvider.selectedChatSession
-                    )
-                        .frame(width: sidebarWidth)
-                        .transition(.move(edge: .trailing))
-                }
-            }
-
         }
     }
     
     func baselineOffset() {
-        offset = (showingLeftSidebar ? sidebarWidth : (showingRightSidebar ? -sidebarWidth : 0))
+        offset = (showingLeftSidebar ? sidebarWidth : 0)
         baseOffset = offset
     }
     
