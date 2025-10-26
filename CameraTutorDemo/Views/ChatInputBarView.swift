@@ -19,10 +19,12 @@ struct ChatInputBarView: View {
                 .focused(keyboardFocused)
                 .textFieldStyle(.roundedBorder)
                 .onSubmit {
+                    query = ""
                     submit(query)
                 }
             
             Button {
+                query = ""
                 submit(query)
             } label: {
                 Text("Send")

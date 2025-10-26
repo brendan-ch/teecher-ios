@@ -9,13 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct ChatHistoryView: View {
+    var onDismiss: (() -> Void)?
     @Binding var selectedChatSession: ChatSession?
     
     @Query(sort: \ChatSession.updatedAt, order: .reverse)
     private var chatSessions: [ChatSession]
     
     @Environment(\.modelContext) var modelContext
-    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +26,7 @@ struct ChatHistoryView: View {
                 } else {
                     ForEach(chatSessions) { chatSession in
                         ChatSessionListButton(isSelected: selectedChatSession == chatSession, chatSession: chatSession) {
-                            selectedChatSession = chatSession
+                            selectChatSession(chatSession)
                         }
                     }
                 }
@@ -45,6 +45,13 @@ struct ChatHistoryView: View {
                 .buttonStyle(.glass)
                 .padding(.horizontal)
             }
+        }
+    }
+    
+    func selectChatSession(_ chatSession: ChatSession) {
+        selectedChatSession = chatSession
+        if let onDismiss = onDismiss {
+            onDismiss()
         }
     }
 }

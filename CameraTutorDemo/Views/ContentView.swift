@@ -65,6 +65,7 @@ struct ContentView: View {
                     }
                     
                     ChatInputBarView(keyboardFocused: $keyboardFocused) { text in
+                        keyboardFocused = false
                         Task {
                             await submit(text)
                         }
@@ -91,8 +92,7 @@ struct ContentView: View {
                                 showingLeftSidebar = false
                                 showingRightSidebar = false
                             }
-                            offset = (showingLeftSidebar ? sidebarWidth : (showingRightSidebar ? -sidebarWidth : 0))
-                            baseOffset = offset
+                            baselineOffset()
                         }
                     }
             )
@@ -102,7 +102,13 @@ struct ContentView: View {
             // MARK: - Left Sidebar
             if showingLeftSidebar {
                 HStack {
-                    ChatHistoryView(selectedChatSession: $selectedChatSession)
+                    ChatHistoryView(
+                        onDismiss: {
+                            showingLeftSidebar = false
+                            baselineOffset()
+                        },
+                        selectedChatSession: $selectedChatSession,
+                    )
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .leading))
                     Spacer()
@@ -113,13 +119,24 @@ struct ContentView: View {
             if showingRightSidebar {
                 HStack {
                     Spacer()
-                    ChatView(session: selectedChatSession)
+                    ChatView(
+                        onDismiss: {
+                            showingRightSidebar = false
+                            baselineOffset()
+                        },
+                        session: selectedChatSession
+                    )
                         .frame(width: sidebarWidth)
                         .transition(.move(edge: .trailing))
                 }
             }
 
         }
+    }
+    
+    func baselineOffset() {
+        offset = (showingLeftSidebar ? sidebarWidth : (showingRightSidebar ? -sidebarWidth : 0))
+        baseOffset = offset
     }
     
     func submit(_ query: String) async {

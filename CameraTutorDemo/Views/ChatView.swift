@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
+    var onDismiss: (() -> Void)?
     var session: ChatSession?
     
     var body: some View {
