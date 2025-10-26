@@ -33,17 +33,27 @@ struct ChatHistoryView: View {
             }
             
             if !chatSessions.isEmpty {
-                Button(role: .destructive) {
-                    selectedChatSession = nil
-                    for session in chatSessions {
-                        modelContext.delete(session)
+                VStack(alignment: .leading) {
+                    Button {
+                        selectedChatSession = nil
+                    } label: {
+                        Text("New chat")
                     }
-                    try? modelContext.save()
-                } label: {
-                    Text("Clear history")
+                    .buttonStyle(.glassProminent)
+                    .padding(.horizontal)
+
+                    Button(role: .destructive) {
+                        selectedChatSession = nil
+                        for session in chatSessions {
+                            modelContext.delete(session)
+                        }
+                        try? modelContext.save()
+                    } label: {
+                        Text("Clear history")
+                    }
+                    .buttonStyle(.glass)
+                    .padding(.horizontal)
                 }
-                .buttonStyle(.glass)
-                .padding(.horizontal)
             }
         }
     }
