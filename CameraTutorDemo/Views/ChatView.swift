@@ -31,10 +31,6 @@ struct ChatView: View {
         }
         .defaultScrollAnchor(.bottom)
     }
-    
-    func submit() {
-        // TODO: Send the query and the image to the server
-    }
 }
 
 
